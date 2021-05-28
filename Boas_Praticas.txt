@@ -1,0 +1,29 @@
+
+Resiliência: O que fazer para mitigar possíveis erros e controlar os possíveis erros recebidos da API?
+		Manter log das ações na API e na aplicação que a consome
+		Monitorar os tempos de resposta das requisições à API
+		Buscar um alto nível de comunicação entre  as equipes desenvolvedores da API e das aplicações que a consomem
+		programar reports automáticos dos erros, quanto mais em tempo real mais fácil de “pegar” o erro
+
+Performance: Quais boas práticas são aplicadas em banco de dados e no código para garantir performance? 
+		Utilização de EXISTS ao invés de utilizar uma sub-consulta na clausula WHERE IN
+		Utilizar procedures e views para poupar instruções SQL que demandam mais do SGBD
+		Utilizar a tipagem de campos especificando o tipo de dado a ser armazenado
+		Fazer consultas com SELECT de colunas especificas evitando o SELECT *
+		Utilizar indices nas colunas mais acessadas
+		Utilizar CACHE para dados que não são atualizados com frequência.
+		Utilizar a paginação para coleções grandes
+		Manter o código legível e comentado
+		A documentação é fundamental para evitar erros no consumo da API
+		Evitar loops e if’s encadeados
+
+Segurança: Como garantir segurança para as APIs do sistema? 
+		Manter log detalhado dos acessos à API
+		Quando possível utilizar filtros de acesso por ip
+		Exigir autenticação para o protocolo HTTP
+		Preferir o protocolo HTTPS
+		Usar autenticação por token
+			
+Concorrência: Como trabalhar com concorrência se milhares de requisições forem solicitadas simultaneamente?
+		Limitar as requisições por usuário, por serviço ou por sessão
+		
