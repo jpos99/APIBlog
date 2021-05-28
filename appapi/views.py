@@ -10,6 +10,7 @@ class AutoresViewSet(viewsets.ModelViewSet):
 
     queryset = Autor.objects.all()
     serializer_class = AutorSerializer
+    http_method_names = ['get', 'post', 'put', 'path']
 
 
 class PostagensViewSet(viewsets.ModelViewSet):
