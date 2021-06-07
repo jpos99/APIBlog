@@ -1,6 +1,7 @@
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, force_authenticate
 from rest_framework import status
 
+import json
 from appapi.models import Autor, Postagem
 from django.contrib.auth.models import User
 
@@ -12,7 +13,8 @@ class AutorTestCase(APITestCase):
     def setUp(self):
         self.list_url = reverse('Autores-list')
         self.usuario_de_teste = User.objects.create_user(
-            username='usuario_teste'
+            username='usuario_teste',
+            password='uma_senha_boa'
         )
 
         self.autor_1 = Autor.objects.create(
@@ -27,19 +29,23 @@ class AutorTestCase(APITestCase):
             usuario_autor=self.usuario_de_teste,
             foto_autor='naruto.jpeg'
         )
+
     def test_requisicao_get_lista_autor(self):
         """Teste de requisição GET lista de autores"""
         response = self.client.get(self.list_url)
+        force_authenticate(response, user=self.usuario_de_teste)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_requisicao_post_criar_autor(self):
         """Teste de requisição POST cria Autor"""
         data = {
-            'nome_autor': "Novo_Autor_teste",
-            'calssificacao_autor': "a",
+            'nome_autor': 'Novo_Autor_teste',
+            'calssificacao_autor': 'a',
             'usuario_autor': self.usuario_de_teste,
+            'foto_Autor': ''
         }
         response = self.client.post(self.list_url, data=data)
+        force_authenticate(response, user=self.usuario_de_teste)
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
 
     def test_requisicao_put_autor(self):
@@ -47,10 +53,12 @@ class AutorTestCase(APITestCase):
         data = {
             'nome_autor': 'TesteAutor2',
             'calssificacao_autor': 'c',
-            'usuario_autor': '',
+            'usuario_autor': self.usuario_de_teste,
             'foto_Autor': ''
         }
-        response = self.client.put('/autores/2/', data=data)
+
+        response = self.client.put('/autores/1', data=data)
+        force_authenticate(response, user=self.usuario_de_teste)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_requisicao_delete_autor(self):
@@ -62,17 +70,18 @@ class PostagemTestCase(APITestCase):
 
     def setUp(self):
         self.list_url = reverse('Postagens-list')
-        self.usuario_de_teste = User.objects.create(
-            username='usuario_teste'
+        self.usuario_de_teste = User.objects.create_user(
+            username='usuario_teste',
+            password='uma_senha_boa'
         )
-        print(self.usuario_de_teste)
+
         self.autor_1 = Autor.objects.create(
             nome_autor='TesteAutor',
             classificacao_autor='b',
             usuario_autor=self.usuario_de_teste,
             foto_autor='sasuke.png'
         )
-        print(self.autor_1)
+
         self.postagem_1 = Postagem.objects.create(
             titulo_postagem='Postagem Teste',
             resumo_postagem='Resumo postagem teste',
@@ -84,6 +93,7 @@ class PostagemTestCase(APITestCase):
     def test_requisicao_get_lista_postagem(self):
         """Teste de requisição GET retornando lista de postagens"""
         response = self.client.get(self.list_url)
+        force_authenticate(response, user=self.usuario_de_teste)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_requisicao_post_lista_postagem(self):
@@ -97,11 +107,12 @@ class PostagemTestCase(APITestCase):
         }
 
         response = self.client.post(self.list_url, data=data)
+        force_authenticate(response, user=self.usuario_de_teste)
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
 
     def test_requisicao_put_lista_postagem(self):
 
-        """Teste de requisição PUT cria Postagem"""
+        """Teste de requisição PUT altera Postagem"""
         data = {
             'titulo_postagem': 'Postagem post Teste',
             'resumo_postagem': 'Resumo postagem teste post',
@@ -110,4 +121,5 @@ class PostagemTestCase(APITestCase):
         }
 
         response = self.client.put('/postagens/1/', data=data)
+        force_authenticate(response, user=self.usuario_de_teste)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
